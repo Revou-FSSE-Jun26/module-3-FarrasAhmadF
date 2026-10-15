@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +29,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Suspense fallback={<header className="border-b px-6 py-3 h-12.25" />}>
-          <Header />
-        </Suspense>
-        {children}
-        <Footer />
+        <AuthProvider>
+          <CartProvider>
+            <Suspense fallback={<header className="border-b px-6 py-3 h-12.25" />}>
+              <Header />
+            </Suspense>
+            {children}
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

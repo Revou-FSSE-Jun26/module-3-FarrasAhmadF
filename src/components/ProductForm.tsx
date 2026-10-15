@@ -1,18 +1,41 @@
 "use client"
 
 import { useState } from "react";
-import Validate, { ProductFormData } from "./Validate";
+import Validate, { ProductFormData } from "./ValidateProduct";
+import { Product } from "./ProductCard";
 
-export default function ProductForm({onAddProduct}: {onAddProduct: (p: ProductFormData) => void}) {
+export default function ProductForm({onAddProduct}: {onAddProduct: (p: Product) => void}) {
     const [form, setForm] = useState<ProductFormData>({name: '', price: 0, stock_quantity: 0, category_id: 0});
+    const [successMsg, setSuccessMsg] = useState('');
+    const [formError, setFormError] = useState('');
     const errors = Validate(form);
     const hasErrors = Object.keys(errors).length > 0;
 
-    function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (hasErrors) return;
-        onAddProduct(form);
-        setForm({name: '', price: 0, stock_quantity: 0, category_id: 0})
+
+        setSuccessMsg('');
+        setFormError('');
+
+        const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const res = await fetch(base + '/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form)
+        })
+
+        if (res.status === 201) {
+            const created: Product = await res.json();
+            onAddProduct(created);
+            setForm({name: '', price: 0, stock_quantity: 0, category_id: 0})
+            setSuccessMsg('Product created successfully');
+        } else if (res.status === 400) {
+            const data = await res.json();
+            setFormError(data.error)
+        } else {
+            setFormError('Something went wrong. Please try again.');
+        }
     }
 
     return (
@@ -56,7 +79,9 @@ export default function ProductForm({onAddProduct}: {onAddProduct: (p: ProductFo
                     {errors.stock_quantity && <p className="text-red-500 text-sm">{errors.stock_quantity}</p>}
                 </div>
             </div>
-            <button type="submit" disabled={hasErrors} className="px-4 py-2 rounded bg-blue-600 text-white w-full disabled:bg-gray-600 disabled:cursor-not-allowed">Add product</button>
+            <button type="submit" disabled={hasErrors} className="px-4 py-2 rounded bg-blue-600 text-white w-full disabled:bg-gray-600 disabled:cursor-not-allowed hover:bg-blue-700 hover:cursor-pointer">Add product</button>
+            {successMsg && <p className="text-green-500 text-sm">{successMsg}</p>}
+            {formError && <p className="text-red-500 text-sm">{formError}</p>}
         </form>
     )
 }

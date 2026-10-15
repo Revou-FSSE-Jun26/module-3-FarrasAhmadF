@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ProductCard, { Product } from "./ProductCard";
-import { ProductFormData } from "./Validate";
+import { ProductFormData } from "./ValidateProduct";
 
 interface ProductSearchLiveProps {
     products: Product[];

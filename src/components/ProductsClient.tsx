@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Product } from "./ProductCard";
-import { ProductFormData } from "./Validate";
 import ProductSearchLive from "./ProductSearchLive";
 import ProductForm from "./ProductForm";
 import CategoryFilter from "./CategoryFilter";
@@ -10,8 +9,8 @@ import CategoryFilter from "./CategoryFilter";
 export default function ProductsClient({initialProducts}: {initialProducts: Product[]}) {
     const [products, setProducts] = useState<Product[]>(initialProducts)
 
-    function addProduct(data: ProductFormData) {
-        setProducts([...products, {id:Date.now(), created_at:new Date().toISOString(), ...data}]);
+    function addProduct(product: Product) {
+        setProducts([...products, product]);
     }
 
     async function handleCategorySelect(categoryId: string) {
