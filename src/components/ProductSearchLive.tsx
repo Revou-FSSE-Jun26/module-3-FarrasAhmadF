@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import ProductCard, { Product } from "./ProductCard";
-import { ProductFormData } from "./ValidateProduct";
+import { useCart, CartItem } from "@/context/CartContext";
 
 interface ProductSearchLiveProps {
     products: Product[];
 };
 
-function CartSummary({cart}: {cart: Product[]}) {
-    const total = cart.reduce((sum, p) => sum + p.price, 0);
+function CartSummary({cart}: {cart: CartItem[]}) {
+    const total = cart.reduce((sum, p) => sum + Number(p.price) * (p.quantity ?? 1), 0);
+    const totalQty = cart.reduce((sum, p) => sum + (p.quantity ?? 1), 0);
     return (
         <div className="border-t border-gray-700 mt-6 pt-4 flex justify-between">
             <div>
@@ -17,8 +18,8 @@ function CartSummary({cart}: {cart: Product[]}) {
                 <p className="font-bold">Total</p>
             </div>
             <div className="text-right">
-                <p>{cart.length}</p>
-                <p className="font-bold">Rp {total.toLocaleString('id-ID')}</p>
+                <p>{totalQty}</p>
+                <p className="font-bold">$ {total.toLocaleString('en-US')}</p>
             </div>
         </div>
     );
@@ -26,9 +27,8 @@ function CartSummary({cart}: {cart: Product[]}) {
 
 export default function ProductSearchLive({products}: ProductSearchLiveProps) {
     const [query, setQuery] = useState('');
-    const [cart, setCart] = useState<Product[]>([])
+    const { items: cart, addToCart } = useCart();
     const filtered = products.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
-    const addToCart = (product: Product) => setCart([...cart, product]);
 
     return (
         <div className="p-4">

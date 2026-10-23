@@ -1,9 +1,11 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import ProductDetailSkeleton from "@/components/ProductDetailSkeleton";
 
 async function getProduct(id: number) {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL;
     const res = await fetch(base + '/products/' + id);
+    if (res.status === 404) notFound();
     if (!res.ok) throw new Error('Failed to load product ' + id + ' (' + res.status + ')');
     return res.json();
 }
@@ -22,7 +24,7 @@ async function ProductCard({id}: {id: number}) {
                 RevoShop › Products › {product.name}
             </p>
             <h1 className="text-2xl font-bold">{product.name}</h1>
-            <p>Rp {product.price.toLocaleString('id-ID')}</p>
+            <p>$ {product.price.toLocaleString('en-US')}</p>
         </div>
     );
 }

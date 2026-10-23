@@ -48,30 +48,34 @@ export default function RegisterForm({onSuccess}: {onSuccess: () => void}) {
                 value={form.username}
                 onChange={(e) => setForm({...form, username: e.target.value})}
                 placeholder="Username"
-                className="border rounded px-2 py-1 w-full" />
-            {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+                className="border rounded px-2 py-1 w-full"
+                data-testid='username-input' />
+            {errors.username && <p className="text-red-500 text-sm" data-testid='username-error'>{errors.username}</p>}
             <input 
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({...form, email: e.target.value})}
                 placeholder="Email"
-                className="border rounded px-2 py-1 w-full" />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                className="border rounded px-2 py-1 w-full"
+                data-testid='email-input' />
+            {errors.email && <p className="text-red-500 text-sm" data-testid='email-error'>{errors.email}</p>}
             <input 
                 type="password"
                 value={form.password}
                 onChange={(e) => setForm({...form, password: e.target.value})}
                 placeholder="Password"
-                className="border rounded px-2 py-1 w-full" />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                className="border rounded px-2 py-1 w-full"
+                data-testid='password-input' />
+            {errors.password && <p className="text-red-500 text-sm" data-testid='password-error'>{errors.password}</p>}
             <input 
                 type="password"
                 value={form.confirmPassword}
                 onChange={(e) => setForm({...form, confirmPassword: e.target.value})}
                 placeholder="Confirm password"
-                className="border rounded px-2 py-1 w-full" />
-            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-            <button type="submit" disabled={hasErrors} className="bg-blue-600 text-white rounded px-4 py-2 w-full disabled:bg-gray-600 disabled:cursor-not-allowed hover:bg-blue-700 hover:cursor-pointer">Register</button>
+                className="border rounded px-2 py-1 w-full"
+                data-testid='confirm-password-input' />
+            {errors.confirmPassword && <p className="text-red-500 text-sm" data-testid='confirm-password-error'>{errors.confirmPassword}</p>}
+            <button type="submit" disabled={hasErrors} data-testid='register-submit' className="bg-blue-600 text-white rounded px-4 py-2 w-full disabled:bg-gray-600 disabled:cursor-not-allowed hover:bg-blue-700 hover:cursor-pointer">Register</button>
             {successMsg && <p className="text-green-500 text-sm bg-green-100 border rounded-lg">{successMsg}</p>}
             {formError && <p className="text-red-500 text-sm bg-red-100 border rounded-lg">{formError}</p>}
         </form>

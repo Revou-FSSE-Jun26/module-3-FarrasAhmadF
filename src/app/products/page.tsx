@@ -9,11 +9,16 @@ import { Metadata } from "next";
 //     {id: 3, name: 'Mouse kantor', category_id: 2, price: 500000, stock_quantity: 15, created_at: '15:45.45 2026'}
 // ];
 
-async function getProducts() {
+async function getProducts(): Promise<Product[]> {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL;
     const res = await fetch(base + '/products');
     if (!res.ok) throw new Error('Failed to load products (' + res.status + ')');
-    return res.json();
+    const data = await res.json();
+    return data.map((p: Product) => ({
+        ...p,
+        price: Number(p.price),
+        stock_quantity: Number(p.stock_quantity),
+    }));
 }
 
 export const metadata: Metadata = {

@@ -19,14 +19,23 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined >(undefined);
 
+function readUserFromStorage(): User | null {
+    if (typeof window === "undefined") return null;
+    try {
+        const stored = localStorage.getItem('user');
+        return stored ? (JSON.parse(stored) as User) : null;
+    } catch {
+        return null;
+    }
+}
+
 export function AuthProvider({children}: {children: React.ReactNode}) {
-    const [user, setUser] = useState<User | null>(null)
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const isLoggedIn = user !== null;
 
     useEffect(() => {
-        const stored = localStorage.getItem('user');
-        if (stored) setUser(JSON.parse(stored));
+        setUser(readUserFromStorage());
         setLoading(false);
     }, []);
 

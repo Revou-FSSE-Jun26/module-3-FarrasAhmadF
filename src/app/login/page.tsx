@@ -57,16 +57,18 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className="border rounded px-2 py-1 w-full" />
-            {fieldErrors.email && <p className="text-red-500 text-sm">{fieldErrors.email}</p>}
+                className="border rounded px-2 py-1 w-full" 
+                data-testid='email-login' />
+            {fieldErrors.email && <p className="text-red-500 text-sm" data-testid='email-error-login'>{fieldErrors.email}</p>}
             <input 
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="border rounded px-2 py-1 w-full" />
-            {fieldErrors.password && <p className="text-red-500 text-sm">{fieldErrors.password}</p>}
-            <button type="submit" disabled={submitting} className="bg-blue-600 text-white rounded px-4 py-2 w-full hover:bg-blue-700 hover:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed">{submitting ? 'Logging in...' : 'Login'}</button>
+                className="border rounded px-2 py-1 w-full"
+                data-testid='password-login' />
+            {fieldErrors.password && <p className="text-red-500 text-sm" data-testid='password-error-login'>{fieldErrors.password}</p>}
+            <button type="submit" disabled={submitting} data-testid='login-submit' className="bg-blue-600 text-white rounded px-4 py-2 w-full hover:bg-blue-700 hover:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed">{submitting ? 'Logging in...' : 'Login'}</button>
             <p className="text-sm text-gray-500">
                 Don't have an account?{' '}
                 <Link href='/register' className="text-blue-600 hover:underline">Create account</Link>
