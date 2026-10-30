@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "playwright test",
+    "test:prod": "playwright test -c playwright.prod.config.ts"
   },
   "dependencies": {
     "lucide-react": "^1.61.0",

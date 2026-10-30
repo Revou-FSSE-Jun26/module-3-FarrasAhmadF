@@ -173,6 +173,28 @@ npx playwright show-report
 
 The GitHub Actions workflow (`.github/workflows/playwright.yml`) runs the same suite on every push to `main`.
 
+### 5. Production E2E tests (live Vercel URL)
+
+`tests/prod/` holds a separate suite that runs against the deployed site and the real backend, with no mocks. It uses its own config (`playwright.prod.config.ts`, Chromium only, one worker) and is not part of the mock suite above.
+
+| Spec | Journey |
+| --- | --- |
+| `auth.prod.spec.ts` | Register a new account → wrong password is rejected → log in → log out |
+| `shopping.prod.spec.ts` | Products list → product detail → add to cart → checkout (QRIS) → order detail → cancel the order |
+| `admin-crud.prod.spec.ts` | Admin logs in → creates a product → edits it → deletes (deactivates) it → it disappears from the shop |
+
+```bash
+npm run test:prod
+```
+
+By default it targets `https://revocoffee.vercel.app` with the demo accounts. Override with environment variables if needed:
+
+```bash
+BASE_URL=https://your-app.vercel.app E2E_ADMIN_EMAIL=... E2E_ADMIN_PASSWORD=... npm run test:prod
+```
+
+These tests write real data: each run registers one `e2e<timestamp>@email.com` user, creates one cancelled order for the demo user, and leaves one deactivated `E2E Test Product <timestamp>` product. The report is saved to `playwright-report-prod/`.
+
 ## Screenshots
 
 ### Home
