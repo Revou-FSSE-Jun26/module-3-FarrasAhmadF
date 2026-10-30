@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import ValidateRegister, { RegisterFormData } from "./ValidateRegister";
-import { User } from "@/context/AuthContext";
 
 export default function RegisterForm({onSuccess}: {onSuccess: () => void}) {
     const [form, setForm] = useState<RegisterFormData>({username: '', email: '', password: '', confirmPassword: ''});
@@ -35,7 +34,6 @@ export default function RegisterForm({onSuccess}: {onSuccess: () => void}) {
         })
 
         if (res.status === 201) {
-            const created: User = await res.json();
             setForm({username: '', email: '', password: '', confirmPassword: ''});
             setTouched({});
             setSuccessMsg('Registration successful. Redirecting you to login page...');

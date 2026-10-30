@@ -26,6 +26,6 @@ test('regular users and guests do not see the dashboard link', async ({ page }) 
         localStorage.setItem('token', 't');
     }, login('user'));
     await page.goto('/');
-    await expect(page.getByTestId('nav-username')).toBeVisible();
+    await expect(page.getByTestId('nav-account')).toBeVisible();
     await expect(page.getByTestId('nav-dashboard')).toHaveCount(0);
 });

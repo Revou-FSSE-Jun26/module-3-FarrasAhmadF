@@ -57,8 +57,10 @@ test('a user can register, log in, and log out', async ({page}) => {
     await page.getByTestId('login-submit').click();
 
     await expect(page).toHaveURL('/');
+    await page.getByTestId('nav-account').click();
     await expect(page.getByTestId('nav-username')).toHaveText(`Hi, ${username}`);
     await page.getByTestId('nav-logout').click();
     await expect(page).toHaveURL('/');
-    await expect(page.getByTestId('nav-username')).toBeHidden();
+    await expect(page.getByTestId('nav-account')).toHaveCount(0);
+    await expect(page.getByTestId('nav-login')).toBeVisible();
 })

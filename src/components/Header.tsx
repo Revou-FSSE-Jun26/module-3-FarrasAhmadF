@@ -2,7 +2,8 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
-import { LayoutDashboard, LogOut, Search, ShoppingCart, Trophy, User, Coffee } from "lucide-react";
+import { LayoutDashboard, Search, ShoppingCart, Trophy, User, Coffee } from "lucide-react";
+import AccountMenu from "./AccountMenu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
@@ -21,7 +22,6 @@ function useMounted() {
 const NAV_LINKS = [
     { href: '/products', label: 'Shop All' },
     { href: '/categories', label: 'Collection' },
-    { href: '/orders', label: 'Support' },
 ];
 
 export default function Header() {
@@ -65,7 +65,7 @@ export default function Header() {
 
             {/* Main nav */}
             <div className="bg-black text-white">
-                <div className="mx-auto max-w-6xl px-6 h-[70px] grid grid-cols-[1fr_auto] md:grid-cols-3 items-center">
+                <div className="mx-auto max-w-6xl px-6 h-17.5 grid grid-cols-[1fr_auto] md:grid-cols-3 items-center">
                     <Link href="/" className="flex items-center gap-2.5 w-fit" data-testid="home-heading" aria-label="RevoCoffee home">
                         <span className="flex size-8 items-center justify-center rounded-full bg-white">
                             <Coffee className="size-4 text-black" strokeWidth={2.5} aria-hidden />
@@ -82,9 +82,6 @@ export default function Header() {
                     <div className="flex items-center justify-end gap-5">
                         {!mounted || loading ? null : isLoggedIn ? (
                             <>
-                                <span data-testid="nav-username" className="hidden sm:inline text-xs text-white/80">
-                                    Hi, {user?.username}
-                                </span>
                                 {user?.role === 'admin' && (
                                     // Visibility only: the dashboard itself is still guarded by AdminRoute + admin-only API.
                                     <Link
@@ -94,22 +91,14 @@ export default function Header() {
                                         aria-label="Admin dashboard"
                                         title="Admin dashboard"
                                     >
-                                        <LayoutDashboard className="size-[18px]" />
+                                        <LayoutDashboard className="size-4.5" />
                                     </Link>
                                 )}
-                                <button
-                                    onClick={logout}
-                                    data-testid="nav-logout"
-                                    className={iconClass}
-                                    aria-label="Logout"
-                                    title="Logout"
-                                >
-                                    <LogOut className="size-[18px]" />
-                                </button>
+                                {user && <AccountMenu user={user} onLogout={logout} className={iconClass} />}
                             </>
                         ) : (
                             <Link href="/login" data-testid="nav-login" className={iconClass} aria-label="Login" title="Login">
-                                <User className="size-[18px]" />
+                                <User className="size-4.5" />
                             </Link>
                         )}
                         <button
@@ -122,7 +111,7 @@ export default function Header() {
                             title="Search"
                             data-testid="nav-search"
                         >
-                            <Search className="size-[18px]" />
+                            <Search className="size-4.5" />
                         </button>
                         <button
                             type="button"
@@ -133,7 +122,7 @@ export default function Header() {
                             aria-haspopup="dialog"
                             title="Cart"
                         >
-                            <ShoppingCart className="size-[18px]" />
+                            <ShoppingCart className="size-4.5" />
                             {mounted && cartCount > 0 && (
                                 <span className="absolute -top-2 -right-2 flex size-4 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-black">
                                     {cartCount}

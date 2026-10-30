@@ -1,5 +1,5 @@
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { Hourglass } from "lucide-react";
+import { Coffee } from "lucide-react";
 import Link from "next/link";
 
 const FOOTER_LINKS = [
@@ -33,7 +33,7 @@ export default function Footer() {
                 <div className="md:col-span-2">
                     <Link href="/" className="flex items-center gap-2.5 w-fit">
                         <span className="flex size-8 items-center justify-center rounded-full bg-white">
-                            <Hourglass className="size-4 text-black" strokeWidth={2.5} aria-hidden />
+                            <Coffee className="size-4 text-black" strokeWidth={2.5} aria-hidden />
                         </span>
                         <span className="text-sm font-medium tracking-[0.25em] uppercase">
                             RevoCoffee<sup className="text-[8px] tracking-normal">®</sup>

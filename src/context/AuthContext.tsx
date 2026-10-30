@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useSyncExternalStore } from "react";
 
 export interface User {
     id: number;
@@ -29,15 +29,21 @@ function readUserFromStorage(): User | null {
     }
 }
 
+const emptySubscribe = () => () => {};
+
 export function AuthProvider({children}: {children: React.ReactNode}) {
     const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
-    const isLoggedIn = user !== null;
-
-    useEffect(() => {
+    // false on the server and during hydration, true afterwards.
+    const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+    const [restored, setRestored] = useState(false);
+    // Restore the session once, right after hydration (render-time update instead of an
+    // effect, so there's no extra render pass and no hydration mismatch).
+    if (mounted && !restored) {
+        setRestored(true);
         setUser(readUserFromStorage());
-        setLoading(false);
-    }, []);
+    }
+    const loading = !restored;
+    const isLoggedIn = user !== null;
 
     function login(user: User, token: string) {
         setUser(user);

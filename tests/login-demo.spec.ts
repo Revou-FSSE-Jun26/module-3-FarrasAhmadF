@@ -47,5 +47,6 @@ test('demo user logs in to the shop', async ({ page }) => {
     await page.getByTestId('use-user').click();
     await page.getByTestId('login-submit').click();
     await expect(page).toHaveURL('/');
+    await page.getByTestId('nav-account').click();
     await expect(page.getByTestId('nav-username')).toHaveText('Hi, jhon');
 });

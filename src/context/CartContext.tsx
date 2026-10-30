@@ -1,7 +1,7 @@
 "use client"
 
 import { Product } from "@/components/ProductCard";
-import { createContext, useCallback, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState, useSyncExternalStore } from "react"
 
 export interface CartItem extends Product {
     quantity: number;
@@ -29,31 +29,46 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CART_STORAGE_KEY = "cart";
 const NOTE_STORAGE_KEY = "cart-note";
 
+const emptySubscribe = () => () => {};
+
+function readStored(key: string): string | null {
+    try {
+        return localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function readStoredItems(): CartItem[] {
+    try {
+        const stored = readStored(CART_STORAGE_KEY);
+        if (!stored) return [];
+        const parsed = JSON.parse(stored) as Array<Product & { quantity?: number }>;
+        // Normalize items from older cart formats that didn't store quantity.
+        return parsed.map((it) => ({
+            ...it,
+            quantity: typeof it.quantity === 'number' && it.quantity > 0 ? it.quantity : 1,
+        }));
+    } catch {
+        return [];
+    }
+}
+
 export function CartProvider({children}: {children: React.ReactNode}) {
     // Always start empty so the first client render matches the server output (avoids hydration mismatch).
     const [items, setItems] = useState<CartItem[]>([]);
     const [note, setNote] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [hydrated, setHydrated] = useState(false);
+    // false on the server and during hydration, true afterwards.
+    const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
-    // After mounting in the browser, read the cart from localStorage.
-    useEffect(() => {
-        try {
-            const stored = localStorage.getItem(CART_STORAGE_KEY);
-            if (stored) {
-                const parsed = JSON.parse(stored) as Array<Product & { quantity?: number }>;
-                // Normalize items from older cart formats that didn't store quantity.
-                const normalized: CartItem[] = parsed.map((it) => ({
-                    ...it,
-                    quantity: typeof it.quantity === 'number' && it.quantity > 0 ? it.quantity : 1,
-                }));
-                setItems(normalized);
-            }
-            setNote(localStorage.getItem(NOTE_STORAGE_KEY) ?? '');
-        } catch {
-        }
+    // Right after hydration, read the cart from localStorage once (render-time update).
+    if (mounted && !hydrated) {
         setHydrated(true);
-    }, []);
+        setItems(readStoredItems());
+        setNote(readStored(NOTE_STORAGE_KEY) ?? '');
+    }
 
     // Persist to localStorage whenever items/note change, but only after hydration is done
     // so the stored cart isn't immediately overwritten by [] on the first render.
