@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CartDrawer from "@/components/CartDrawer";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 
@@ -18,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RevoShop",
-  description: "Your #1 online store.",
+  title: "RevoCoffee",
+  description: "Precision coffee tools for every brewer.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -31,11 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <CartProvider>
-            <Suspense fallback={<header className="border-b px-6 py-3 h-12.25" />}>
+            <Suspense fallback={<header className="bg-black h-[98px]" />}>
               <Header />
             </Suspense>
             {children}
             <Footer />
+            <CartDrawer />
           </CartProvider>
         </AuthProvider>
       </body>

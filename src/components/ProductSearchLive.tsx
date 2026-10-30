@@ -27,7 +27,7 @@ function CartSummary({cart}: {cart: CartItem[]}) {
 
 export default function ProductSearchLive({products}: ProductSearchLiveProps) {
     const [query, setQuery] = useState('');
-    const { items: cart, addToCart } = useCart();
+    const { items: cart } = useCart();
     const filtered = products.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
 
     return (
@@ -42,7 +42,7 @@ export default function ProductSearchLive({products}: ProductSearchLiveProps) {
             ) : (
                 <div className="flex gap-4 flex-wrap">
                 {filtered.map((p) => (
-                    <ProductCard key={p.id} product={p} onAdd={addToCart}/>
+                    <ProductCard key={p.id} product={p}/>
                     ))}
                 </div>
             )}

@@ -9,7 +9,11 @@ export default function ProtectedRoute({children}: {children: React.ReactNode}) 
     const router = useRouter();
 
     useEffect(() => {
-        if (!loading && !isLoggedIn) router.replace('/login');
+        if (!loading && !isLoggedIn) {
+            // Send the user back here after logging in.
+            const here = window.location.pathname + window.location.search;
+            router.replace('/login?next=' + encodeURIComponent(here));
+        }
     }, [isLoggedIn, loading, router]);
 
     if (loading) return <p>Loading...</p>
